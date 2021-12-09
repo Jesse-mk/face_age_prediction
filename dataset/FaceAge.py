@@ -21,6 +21,7 @@ class FaceAgeDataset(Dataset):
         mask_info="BOX",
         data_source="wiki",
     ):
+        self.csv_path = csv_path
         self.df = pd.read_csv(csv_path)
         self.data_dir = data_dir
         shape_predictor_path = os.path.join(
@@ -52,15 +53,24 @@ class FaceAgeDataset(Dataset):
         )
 
     def __len__(self):
-        return 100  # len(self.df)
+        return len(self.df)
 
     def __getitem__(self, idx):
+        print(idx)
         # get specific example:
         sample = self.df.iloc[idx]
+
 
         if self.data_source == "wiki":
             img_path = os.path.join(
                 self.data_dir, "data", "wiki_crop", sample["full_path"]
+            )
+        elif self.data_source == "lap":
+            #should be train, valid or test
+            train_type = self.csv_path.split("gt_")[1].split(".csv")[0]
+
+            img_path = os.path.join(
+                self.data_dir, "data", "appa-real-release", train_type, sample["file_name"] + "_face.jpg"
             )
         else:
             img_path = os.path.join(self.data_dir, "data", sample["full_path"])
@@ -95,8 +105,13 @@ class FaceAgeDataset(Dataset):
             transformed_mask = transformed_mask.unsqueeze(-1)
 
         # get label:
-        label = (
-            sample["age"] - 1
-        )  # need to subtract one since need to fit in possible values!! #want to get label to be between 0 and 1 (normalize label)
+        try:
+            label = (
+                sample["age"] - 1
+            )  # need to subtract one since need to fit in possible values!! #want to get label to be between 0 and 1 (normalize label)
+        except:
+            label = (
+                sample["real_age"] - 1
+            )
 
         return transformed_img, label, transformed_mask 
