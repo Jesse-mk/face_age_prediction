@@ -330,9 +330,9 @@ def parse_args(arguments):
         default=10,
         help="Number of epochs before validation increases to early stop at, 10",
     )
-    parser.add_argument("--num_epochs", default=250, help="Number of epochs")
-    parser.add_argument("--lr", default=0.001, help="Optimizer learning rate")
-    parser.add_argument("--dropout", default=0.40, help="dropout rate")
+    parser.add_argument("--num_epochs", default=250, help="Number of epochs", type=int)
+    parser.add_argument("--lr", default=0.001, help="Optimizer learning rate", type=int)
+    parser.add_argument("--dropout", default=0.40, help="dropout rate", type=int)
 
     # === Dataloader config ===
     parser.add_argument(
@@ -368,7 +368,7 @@ def parse_args(arguments):
         help="The source dataset to use",
     )
     parser.add_argument(
-        "--pre_mask", choices=["1", "0"], default="0", help="The mask type to use"
+        "--pre_mask", choices=[1, 0], default=0, help="The mask type to use", type=int,
     )
     parser.add_argument(
         "--load_model", default="", help="The path to load checkpoint from (str)"

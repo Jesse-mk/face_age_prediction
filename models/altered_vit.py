@@ -12,7 +12,7 @@ from PIL import Image
 import torch.nn as nn
 
 class AlteredVITModel(torch.nn.Module):
-    def __init__(self, premodel=False, POOLED_SIZE=768, CATEGORIES=98, in_channels=1,  dropout=.40):
+    def __init__(self, premodel=False, POOLED_SIZE=768, CATEGORIES=99, in_channels=1,  dropout=.40):
         super(AlteredVITModel, self).__init__()
         self.POOLED_SIZE = POOLED_SIZE
         self.CATEGORIES = CATEGORIES

@@ -1,5 +1,6 @@
 from dataset import FaceAgeDataset
 from torch.utils.data import Dataset, DataLoader
+import os
 
 
 def create_datasets(
@@ -14,7 +15,11 @@ def create_datasets(
 ):
     """returns train_loader if train_data is True, else test_loader. Returns validation_loader as well either way"""
 
-    path = f"/home/jessekim/data/{data_source}_{dataset_type}.csv"
+    print(data_source)
+    if data_source == 'lap': 
+        path = os.path.join(data_dir, "data", "appa-real-release", f"{dataset_type}.csv")
+    else:                    
+        path = os.path.join(data_dir, "data", f"{data_source}_{dataset_type}.csv")
     print(path)
     # train or test loader
     df = FaceAgeDataset(
@@ -23,6 +28,7 @@ def create_datasets(
         transform=transform,
         mask_info=mask_info,
         data_source=data_source,
+        dataset_type=dataset_type
     )
 
     loader = DataLoader(df, batch_size=bs, shuffle=shuffle, num_workers=num_workers)

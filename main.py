@@ -174,7 +174,7 @@ def run_experiment(
     print(f"model type is {model_type}")
 
     model = load_in_model(
-        model_type, output_type, loss_type, dropout, mask_info, pre_mask
+        model_type, output_type, loss_type, dropout, mask_info, pre_mask, load_model
     )
 
     # add to device (GPU vs CPU) and parallelize it
@@ -305,7 +305,7 @@ def train(
     data_source="wiki",
     data_dir="/home/jessekim",
     mask_info=None,
-    pre_mask="0",
+    pre_mask=0,
     train_data=True,
     bs=16,
     shuffle=True,

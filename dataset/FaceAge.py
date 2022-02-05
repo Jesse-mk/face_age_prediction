@@ -20,10 +20,12 @@ class FaceAgeDataset(Dataset):
         transform=None,
         mask_info="BOX",
         data_source="wiki",
+        dataset_type="train"
     ):
         self.csv_path = csv_path
         self.df = pd.read_csv(csv_path)
         self.data_dir = data_dir
+        self.dataset_type = dataset_type
         shape_predictor_path = os.path.join(
             data_dir, "models", "shape_predictor_68_face_landmarks.dat"
         )
@@ -37,7 +39,7 @@ class FaceAgeDataset(Dataset):
 
         ## VIT constants
         self.IMAGE_SIZE = 224  # 384 #224
-        self.N_LABELS = 99  # 1 to 99 but subtract 1 so 0 to 98
+        self.N_LABELS = 100  # 1 to 100 but subtract 1 so 0 to 98
 
         # transformations:
         #         self.preprocess_mask = transforms.Compose([
@@ -56,7 +58,7 @@ class FaceAgeDataset(Dataset):
         return len(self.df)
 
     def __getitem__(self, idx):
-        print(idx)
+#         print(idx)
         # get specific example:
         sample = self.df.iloc[idx]
 
@@ -67,10 +69,9 @@ class FaceAgeDataset(Dataset):
             )
         elif self.data_source == "lap":
             #should be train, valid or test
-            train_type = self.csv_path.split("gt_")[1].split(".csv")[0]
 
             img_path = os.path.join(
-                self.data_dir, "data", "appa-real-release", train_type, sample["file_name"] + "_face.jpg"
+                self.data_dir, "data", "appa-real-release", self.dataset_type, sample["full_path"]
             )
         else:
             img_path = os.path.join(self.data_dir, "data", sample["full_path"])
@@ -105,13 +106,7 @@ class FaceAgeDataset(Dataset):
             transformed_mask = transformed_mask.unsqueeze(-1)
 
         # get label:
-        try:
-            label = (
-                sample["age"] - 1
-            )  # need to subtract one since need to fit in possible values!! #want to get label to be between 0 and 1 (normalize label)
-        except:
-            label = (
-                sample["real_age"] - 1
-            )
-
+        label = (
+            sample["age"] - 1
+        )  # need to subtract one since need to fit in possible values!! #want to get label to be between 0 and 1 (normalize label)
         return transformed_img, label, transformed_mask 
